@@ -70,5 +70,16 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
 
+    val camerax_version = "1.4.0-rc01" // Use a consistent version
+
+    // Core CameraX
+    implementation("androidx.camera:camera-core:$camerax_version")
+    implementation("androidx.camera:camera-camera2:$camerax_version")
+    implementation("androidx.camera:camera-lifecycle:$camerax_version")
+    implementation("androidx.camera:camera-view:$camerax_version")
+
+    // The specific library for Compose Viewfinder
+    implementation("androidx.camera:camera-viewfinder-compose:1.0.0-alpha01")
+
 
 }
