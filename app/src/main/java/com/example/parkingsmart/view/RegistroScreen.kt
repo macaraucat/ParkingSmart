@@ -1,7 +1,6 @@
 package com.example.parkingsmart.view
 
 import android.Manifest
-import android.content.pm.PackageManager
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -29,10 +28,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.parkingsmart.viewmodel.UsuarioViewModel
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import com.example.parkingsmart.ui.theme.Blue
 
@@ -51,9 +50,11 @@ fun RegistroScreen(
         val granted = permissions.getOrDefault(Manifest.permission.ACCESS_FINE_LOCATION, false) ||
                 permissions.getOrDefault(Manifest.permission.ACCESS_COARSE_LOCATION, false)
         if (granted) {
-            navController.navigate("dashboard")
+            navController.navigate("dashboard") {
+                popUpTo(0)
+            }
         } else {
-            Toast.makeText(context, "Se requiere permiso de ubicación para registrarse", Toast.LENGTH_LONG).show()
+            Toast.makeText(context, "Debe aceptar los permisos de ubicación para continuar", Toast.LENGTH_LONG).show()
         }
     }
 
@@ -82,7 +83,7 @@ fun RegistroScreen(
             OutlinedTextField(
                 value = estado.nombre,
                 onValueChange = viewModel::onNombreChange,
-                label = { Text("Nombre") },
+                label = { Text("Nombre", color = Color.Black) },
                 isError = estado.errores.nombre != null,
                 modifier = Modifier.fillMaxWidth(),
                 supportingText = {
@@ -95,7 +96,7 @@ fun RegistroScreen(
             OutlinedTextField(
                 value = estado.patente,
                 onValueChange = viewModel::onPatenteChange,
-                label = { Text("Patente") },
+                label = { Text("Patente", color = Color.Black) },
                 isError = estado.errores.patente != null,
                 modifier = Modifier.fillMaxWidth(),
                 supportingText = {
@@ -108,7 +109,7 @@ fun RegistroScreen(
             OutlinedTextField(
                 value = estado.correo,
                 onValueChange = viewModel::onCorreoChange,
-                label = { Text("Correo") },
+                label = { Text("Correo", color = Color.Black) },
                 isError = estado.errores.correo != null,
                 modifier = Modifier.fillMaxWidth(),
                 supportingText = {
@@ -121,7 +122,7 @@ fun RegistroScreen(
             OutlinedTextField(
                 value = estado.clave,
                 onValueChange = viewModel::onClaveChange,
-                label = { Text("Clave") },
+                label = { Text("Clave", color = Color.Black) },
                 visualTransformation = PasswordVisualTransformation(),
                 isError = estado.errores.clave != null,
                 modifier = Modifier.fillMaxWidth(),
@@ -142,18 +143,13 @@ fun RegistroScreen(
 
             Button(
                 onClick = {
-                    if (viewModel.validarRegistro()) {
-                        val fineLoc = ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
-                        val coarseLoc = ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION)
-
-                        if (fineLoc == PackageManager.PERMISSION_GRANTED || coarseLoc == PackageManager.PERMISSION_GRANTED) {
-                            navController.navigate("dashboard")
-                        } else {
-                            locationPermissionLauncher.launch(
-                                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
-                            )
-                        }
-                    }
+                    // Lanzamos la solicitud de permisos
+                    locationPermissionLauncher.launch(
+                        arrayOf(
+                            Manifest.permission.ACCESS_FINE_LOCATION,
+                            Manifest.permission.ACCESS_COARSE_LOCATION
+                        )
+                    )
                 },
                 colors = ButtonDefaults.buttonColors(containerColor = Blue),
                 modifier = Modifier.fillMaxWidth().height(44.dp),

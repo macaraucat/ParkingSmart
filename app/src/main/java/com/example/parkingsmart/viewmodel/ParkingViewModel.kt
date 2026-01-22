@@ -3,6 +3,7 @@ package com.example.parkingsmart.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.parkingsmart.model.ParkingUIState
+import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,6 +21,9 @@ class ParkingViewModel : ViewModel() {
     private var timerJob: Job? = null
 
 
+    fun actualizarUbicacion(latLng: LatLng) {
+        _uiState.update { it.copy(ubicacionActual = latLng) }
+    }
 
     fun seleccionarYActivarEspacio(numeroEspacio: Int) {
         _uiState.update {
@@ -75,7 +79,7 @@ class ParkingViewModel : ViewModel() {
 
 
                 _uiState.update { it.copy(estaCargando = false, estaActivo = false) }
-
+                onSuccess()
             } catch (_: Exception) {
                 _uiState.update {
                     it.copy(

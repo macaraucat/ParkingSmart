@@ -11,6 +11,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -29,7 +30,6 @@ fun LoginScreen(
     val estado by viewModel.estado.collectAsState()
     val context = LocalContext.current
 
-    // Lanzador de permisos que maneja la navegación según el resultado
     val locationPermissionLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
     ) { permissions ->
@@ -37,13 +37,11 @@ fun LoginScreen(
         val coarseGranted = permissions[Manifest.permission.ACCESS_COARSE_LOCATION] ?: false
         
         if (fineGranted || coarseGranted) {
-            // Permiso otorgado, permitimos el paso al Dashboard
             navController.navigate("dashboard") {
                 popUpTo("login") { inclusive = true }
             }
         } else {
-            // Permiso denegado, bloqueamos el acceso
-            Toast.makeText(context, "ERROR: Debe aceptar los permisos de ubicación para continuar", Toast.LENGTH_LONG).show()
+            Toast.makeText(context, "Debe aceptar los permisos de ubicación para continuar", Toast.LENGTH_LONG).show()
         }
     }
 
@@ -70,7 +68,7 @@ fun LoginScreen(
                 value = estado.patente,
                 modifier = Modifier.fillMaxWidth(),
                 onValueChange = viewModel::onPatenteChange,
-                label = { Text("Patente") },
+                label = { Text("Patente", color = Color.Black) },
                 isError = estado.errores.patente != null,
                 supportingText = {
                     estado.errores.patente?.let { Text(it, color = MaterialTheme.colorScheme.error) }
@@ -81,7 +79,7 @@ fun LoginScreen(
                 value = estado.clave,
                 modifier = Modifier.fillMaxWidth(),
                 onValueChange = viewModel::onClaveChange,
-                label = { Text("Clave") },
+                label = { Text("Clave", color = Color.Black) },
                 visualTransformation = PasswordVisualTransformation(),
                 isError = estado.errores.clave != null,
                 supportingText = {
@@ -92,7 +90,6 @@ fun LoginScreen(
             Button(
                 onClick = {
                     if (viewModel.validarLogIn()) {
-                        // SIEMPRE disparamos el flujo de permisos al intentar logearse
                         locationPermissionLauncher.launch(
                             arrayOf(
                                 Manifest.permission.ACCESS_FINE_LOCATION,

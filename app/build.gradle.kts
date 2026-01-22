@@ -6,9 +6,7 @@ plugins {
 
 android {
     namespace = "com.example.parkingsmart"
-    compileSdk {
-        version = release(36)
-    }
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.example.parkingsmart"
@@ -61,6 +59,7 @@ dependencies {
     // Google Maps para Compose
     implementation("com.google.maps.android:maps-compose:6.4.1")
     implementation("com.google.android.gms:play-services-maps:19.0.0")
+    implementation("com.google.android.gms:play-services-location:21.3.0")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
@@ -80,6 +79,5 @@ dependencies {
 
     // The specific library for Compose Viewfinder
     implementation("androidx.camera:camera-viewfinder-compose:1.0.0-alpha01")
-
 
 }
