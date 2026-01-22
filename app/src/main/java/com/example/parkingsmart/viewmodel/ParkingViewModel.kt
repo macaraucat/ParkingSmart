@@ -76,7 +76,7 @@ class ParkingViewModel : ViewModel() {
 
                 _uiState.update { it.copy(estaCargando = false, estaActivo = false) }
 
-            } catch (e: Exception) {
+            } catch (_: Exception) {
                 _uiState.update {
                     it.copy(
                         estaCargando = false,
