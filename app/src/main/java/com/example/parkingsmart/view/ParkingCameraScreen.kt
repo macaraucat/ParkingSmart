@@ -1,8 +1,8 @@
 package com.example.parkingsmart.view
 
-import CameraScreen
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -29,12 +29,19 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.parkingsmart.R
+import com.example.parkingsmart.viewmodel.ParkingViewModel
 
 @Composable
-fun ParkingMainScreen(navController: NavController) {
+fun ParkingMainScreen(
+    navController: NavController,
+    viewModel: ParkingViewModel = viewModel()
+) {
     var hasCameraPermission by remember { mutableStateOf(false) }
     var showCamera by remember { mutableStateOf(false) }
 
@@ -48,15 +55,20 @@ fun ParkingMainScreen(navController: NavController) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         if (!showCamera) {
+            Image(
+                painter = painterResource(id = R.drawable.car),
+                contentDescription = "Auto Estacionado",
+                modifier = Modifier.size(400.dp))
+
             Button(
-                onClick = { navController.navigate("parking_screen") },
+                onClick = { 
+                    viewModel.iniciarCronometro()
+                    navController.navigate("parking_screen")
+                },
                 modifier = Modifier.fillMaxWidth().height(56.dp),
                 shape = RoundedCornerShape(12.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFF105DFB),
-                    contentColor = Color.White
-                )
-            ) {
+                colors = ButtonDefaults.buttonColors(containerColor = Color.Blue, contentColor = Color.White)
+            ){
                 Text("Confirmar estacionamiento", style = MaterialTheme.typography.labelLarge)
             }
 
@@ -72,10 +84,7 @@ fun ParkingMainScreen(navController: NavController) {
                 },
                 modifier = Modifier.fillMaxWidth().height(56.dp),
                 shape = RoundedCornerShape(12.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFFFF7C7C),
-                    contentColor = Color.White
-                )
+                colors = ButtonDefaults.buttonColors(containerColor = Color.Gray, contentColor = Color.White)
             ) {
                 Text("Abrir cámara", style = MaterialTheme.typography.labelLarge)
             }
@@ -94,11 +103,8 @@ fun ParkingMainScreen(navController: NavController) {
                 )
             }
         } else {
-            // SI SE ACTIVA LA CÁMARA, MOSTRAR CameraScreen
             Box(modifier = Modifier.fillMaxSize()) {
                 CameraScreen()
-
-                // Botón para volver atrás de la cámara
                 IconButton(
                     onClick = { showCamera = false },
                     modifier = Modifier.padding(top = 10.dp).align(Alignment.TopStart)) {

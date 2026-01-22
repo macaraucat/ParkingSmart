@@ -70,7 +70,7 @@ fun MetodoPagoScreen(
 fun BotonMetodoPago(texto: String, onClick: () -> Unit) {
     Button(
         onClick = onClick,
-        modifier = Modifier.fillMaxWidth().height(56.dp).padding(top = 12.dp),
+        modifier = Modifier.fillMaxWidth().height(72.dp).padding(top = 16.dp),
         shape = RoundedCornerShape(12.dp),
         colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF00B607))
     ) {

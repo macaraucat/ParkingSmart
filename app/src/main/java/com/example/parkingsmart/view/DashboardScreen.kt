@@ -88,9 +88,9 @@ fun DashboardScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
-                .padding(vertical = 80.dp),
+                .padding(top = 20.dp),
         ) {
-            Text("Tu ubicación actual", style = MaterialTheme.typography.headlineMedium, modifier = Modifier.padding(top = 30.dp))
+            Text("Tu ubicación actual", style = MaterialTheme.typography.headlineMedium)
 
             Box(modifier = Modifier.fillMaxWidth().height(240.dp).padding(horizontal = 30.dp)
             ) {
@@ -161,7 +161,7 @@ fun DashboardScreen(
                 horizontalArrangement = Arrangement.Center
             ) {
                 LeyendaItem(Color(0xFF00B607), "Disponible")
-                LeyendaItem(Color(0xFFE7E7E7), "Procesando")
+                LeyendaItem(Color(0xFFE0E0E0), "Procesando")
                 LeyendaItem(Color(0xFFF00000), "Ocupado")
             }
         }
