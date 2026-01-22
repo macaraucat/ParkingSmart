@@ -27,7 +27,7 @@ fun LoginScreen(
     navController: NavController,
     viewModel: UsuarioViewModel
 ) {
-    val estado by viewModel.estado.collectAsState()
+    val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
 
     val locationPermissionLauncher = rememberLauncherForActivityResult(
@@ -35,18 +35,20 @@ fun LoginScreen(
     ) { permissions ->
         val fineGranted = permissions[Manifest.permission.ACCESS_FINE_LOCATION] ?: false
         val coarseGranted = permissions[Manifest.permission.ACCESS_COARSE_LOCATION] ?: false
-        
+
         if (fineGranted || coarseGranted) {
             navController.navigate("dashboard") {
                 popUpTo("login") { inclusive = true }
             }
         } else {
-            Toast.makeText(context, "Debe aceptar los permisos de ubicación para continuar", Toast.LENGTH_LONG).show()
+            Toast.makeText(context, "Se requieren permisos para continuar", Toast.LENGTH_LONG).show()
         }
     }
 
     Column(
-        modifier = Modifier.fillMaxSize().padding(horizontal = 40.dp),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = 40.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -64,51 +66,60 @@ fun LoginScreen(
         )
 
         Column(modifier = Modifier.fillMaxWidth()) {
+
             OutlinedTextField(
-                value = estado.patente,
+                value = uiState.correo,
                 modifier = Modifier.fillMaxWidth(),
-                onValueChange = viewModel::onPatenteChange,
-                label = { Text("Patente", color = Color.Black) },
-                isError = estado.errores.patente != null,
+                onValueChange = viewModel::onCorreoChange,
+                label = { Text("Correo Electrónico") },
+                isError = uiState.errores.correo != null,
                 supportingText = {
-                    estado.errores.patente?.let { Text(it, color = MaterialTheme.colorScheme.error) }
+                    uiState.errores.correo?.let { Text(it, color = MaterialTheme.colorScheme.error) }
                 }
             )
 
             OutlinedTextField(
-                value = estado.clave,
+                value = uiState.clave,
                 modifier = Modifier.fillMaxWidth(),
                 onValueChange = viewModel::onClaveChange,
-                label = { Text("Clave", color = Color.Black) },
+                label = { Text("Clave") },
                 visualTransformation = PasswordVisualTransformation(),
-                isError = estado.errores.clave != null,
+                isError = uiState.errores.clave != null,
                 supportingText = {
-                    estado.errores.clave?.let { Text(it, color = MaterialTheme.colorScheme.error) }
+                    uiState.errores.clave?.let { Text(it, color = MaterialTheme.colorScheme.error) }
                 }
             )
 
             Button(
                 onClick = {
-                    if (viewModel.validarLogIn()) {
-                        locationPermissionLauncher.launch(
-                            arrayOf(
-                                Manifest.permission.ACCESS_FINE_LOCATION,
-                                Manifest.permission.ACCESS_COARSE_LOCATION
+                    viewModel.loginUsuario(
+                        onSuccess = {
+                            locationPermissionLauncher.launch(
+                                arrayOf(
+                                    Manifest.permission.ACCESS_FINE_LOCATION,
+                                    Manifest.permission.ACCESS_COARSE_LOCATION
+                                )
                             )
-                        )
-                    }
+                        }
+                    )
                 },
-                modifier = Modifier.fillMaxWidth().height(68.dp).padding(top = 14.dp, bottom = 10.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Blue),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(68.dp)
+                    .padding(top = 14.dp, bottom = 10.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = Blue), // Asegúrate de tener definido 'Blue' o usa Color.Blue
                 shape = RoundedCornerShape(12.dp)
             ) {
                 Text("Iniciar Sesión", style = MaterialTheme.typography.labelLarge)
             }
 
             Button(
-                onClick = { navController.navigate("registro") },
+                onClick = {
+                    viewModel.limpiarDatos()
+                    navController.navigate("registro")
+                },
                 modifier = Modifier.fillMaxWidth().height(44.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Gray),
+                colors = ButtonDefaults.buttonColors(containerColor = Color.Gray),
                 shape = RoundedCornerShape(12.dp)
             ) {
                 Text("Registrarse", style = MaterialTheme.typography.labelLarge)

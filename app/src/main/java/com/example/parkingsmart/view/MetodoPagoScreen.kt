@@ -17,12 +17,18 @@ fun MetodoPagoScreen(
     viewModel: PagoViewModel,
     monto: Double,
     tiempo: String,
+    correoUsuario: String,
     onPagoExitoso: () -> Unit
 ) {
     val state by viewModel.uiState.collectAsState()
 
-    LaunchedEffect(Unit) { viewModel.inicializarPago(monto, tiempo) }
-    LaunchedEffect(state.pagoExitoso) { if (state.pagoExitoso) onPagoExitoso() }
+    LaunchedEffect(Unit) {
+        viewModel.inicializarPago(monto, tiempo)
+    }
+
+    LaunchedEffect(state.pagoExitoso) {
+        if (state.pagoExitoso) onPagoExitoso()
+    }
 
     Column(
         modifier = Modifier.fillMaxSize().padding(all = 40.dp),
@@ -30,30 +36,33 @@ fun MetodoPagoScreen(
         verticalArrangement = Arrangement.Center
     ) {
         Text("Método de Pago", style = MaterialTheme.typography.headlineMedium)
-
         Text(text = "Seleccione un medio de pago", style = MaterialTheme.typography.headlineSmall)
 
         Text(
             text = "Total a pagar: $${state.montoTotal.toInt()}",
             style = MaterialTheme.typography.headlineSmall,
-            color = Gray,
+            color = Color.Gray,
             modifier = Modifier.padding(top = 16.dp, bottom = 16.dp)
         )
 
         if (state.estaProcesando) {
-            CircularProgressIndicator(color = LightBlue)
-            Text("Procesando pago...")
+            CircularProgressIndicator(color = Color.Blue) // Ajusta tu color
+            Text("Procesando pago...", modifier = Modifier.padding(top = 8.dp))
         } else {
             BotonMetodoPago("Efectivo") {
                 viewModel.seleccionarMetodoPago("Efectivo")
-                viewModel.procesarPago()
+                viewModel.procesarPago(correoUsuario)
             }
+
             BotonMetodoPago("Tarjeta de Crédito/Débito") {
                 viewModel.seleccionarMetodoPago("Tarjeta")
-                viewModel.procesarPago()
+                viewModel.procesarPago(correoUsuario)
             }
         }
-        state.mensajeError?.let { Text(it, color = Color.Red) }
+
+        state.mensajeError?.let {
+            Text(it, color = Color.Red, modifier = Modifier.padding(top = 8.dp))
+        }
     }
 }
 

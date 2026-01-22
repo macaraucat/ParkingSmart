@@ -38,7 +38,6 @@ fun CameraScreen(modifier: Modifier = Modifier) {
     val cameraProviderFuture = remember { ProcessCameraProvider.getInstance(context) }
 
     Box(modifier = modifier.fillMaxSize()) {
-        // Vista previa de la cámara
         AndroidView(
             factory = { ctx ->
                 val previewView = PreviewView(ctx)
@@ -55,7 +54,6 @@ fun CameraScreen(modifier: Modifier = Modifier) {
 
                     try {
                         cameraProvider.unbindAll()
-                        // 2. Vincular ImageCapture junto con el Preview
                         cameraProvider.bindToLifecycle(
                             lifecycleOwner,
                             cameraSelector,
@@ -72,7 +70,6 @@ fun CameraScreen(modifier: Modifier = Modifier) {
             modifier = Modifier.fillMaxSize()
         )
 
-        //Botón para tomar la foto
         FloatingActionButton(
             onClick = { takePhoto(context, imageCapture) },
             modifier = Modifier
@@ -85,9 +82,7 @@ fun CameraScreen(modifier: Modifier = Modifier) {
     }
 }
 
-//Función para capturar y guardar la imagen
 private fun takePhoto(context: Context, imageCapture: ImageCapture) {
-    // Crear nombre del archivo y ruta en la galería
     val name = SimpleDateFormat("yyyy-MM-dd-HH-mm-ss-SSS", Locale.US)
         .format(System.currentTimeMillis())
 
@@ -99,12 +94,10 @@ private fun takePhoto(context: Context, imageCapture: ImageCapture) {
         }
     }
 
-    // Configurar el archivo de salida
     val outputOptions = ImageCapture.OutputFileOptions
         .Builder(context.contentResolver, MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
         .build()
 
-    // Ejecutar la captura
     imageCapture.takePicture(
         outputOptions,
         ContextCompat.getMainExecutor(context),

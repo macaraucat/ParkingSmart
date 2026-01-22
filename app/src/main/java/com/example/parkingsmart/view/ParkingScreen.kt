@@ -1,9 +1,23 @@
 package com.example.parkingsmart.view
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -14,16 +28,19 @@ import com.example.parkingsmart.ui.theme.Blue
 import com.example.parkingsmart.ui.theme.Gray
 import com.example.parkingsmart.ui.theme.White
 import com.example.parkingsmart.viewmodel.ParkingViewModel
+import com.example.parkingsmart.viewmodel.UsuarioViewModel
 
 @Composable
 fun ParkingScreen(
-    viewModel: ParkingViewModel = viewModel(),
-    onNavegarAlPago: (Double, String) -> Unit
+    parkingViewModel: ParkingViewModel = viewModel(),
+    usuarioViewModel: UsuarioViewModel = viewModel(), // Agregado
+    onNavegarAlPago: (Double, String, String) -> Unit // Modificado
 ) {
-    val state by viewModel.uiState.collectAsState()
+    val parkingUiState by parkingViewModel.uiState.collectAsState()
+    val usuarioUiState by usuarioViewModel.uiState.collectAsState()
 
     LaunchedEffect(Unit) {
-        viewModel.iniciarCronometro()
+        parkingViewModel.iniciarCronometro()
     }
 
     Column(
@@ -45,14 +62,14 @@ fun ParkingScreen(
             ) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Text("Espacio", color = Gray)
-                    Text("#${state.numeroEspacio}", style = MaterialTheme.typography.displayMedium)
+                    Text("#${parkingUiState.numeroEspacio}", style = MaterialTheme.typography.displayMedium)
                 }
 
                 HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
 
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Text("Tiempo estacionado", color = Gray)
-                    Text(state.tiempoFormateado, style = MaterialTheme.typography.displayLarge)
+                    Text(parkingUiState.tiempoFormateado, style = MaterialTheme.typography.displayLarge)
                 }
 
                 Card(
@@ -63,8 +80,8 @@ fun ParkingScreen(
                         modifier = Modifier.padding(16.dp)
                     ) {
                         Text("Costo actual", fontSize = 14.sp, color = Gray)
-                        Text("$${state.costoActual.toInt()}", style = MaterialTheme.typography.titleMedium)
-                        Text("$${state.tarifaPorMinuto.toInt()}/minuto", style = MaterialTheme.typography.titleSmall)
+                        Text("$${parkingUiState.costoActual.toInt()}", style = MaterialTheme.typography.titleMedium)
+                        Text("$${parkingUiState.tarifaPorMinuto.toInt()}/minuto", style = MaterialTheme.typography.titleSmall)
                     }
                 }
             }
@@ -72,7 +89,8 @@ fun ParkingScreen(
 
         Button(
             onClick = {
-                onNavegarAlPago(state.costoActual, state.tiempoFormateado)
+                // Pasamos el correo del usuarioViewModel
+                onNavegarAlPago(parkingUiState.costoActual, parkingUiState.tiempoFormateado, usuarioUiState.correo)
             },
             modifier = Modifier.fillMaxWidth().height(56.dp),
             colors = ButtonDefaults.buttonColors(containerColor = Blue),

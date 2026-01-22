@@ -40,8 +40,7 @@ fun RegistroScreen(
     navController: NavController,
     viewModel: UsuarioViewModel
 ) {
-    val estado by viewModel.estado.collectAsState()
-
+    val estado by viewModel.uiState.collectAsState()
     val context = LocalContext.current
 
     val locationPermissionLauncher = rememberLauncherForActivityResult(
@@ -49,23 +48,25 @@ fun RegistroScreen(
     ) { permissions ->
         val granted = permissions.getOrDefault(Manifest.permission.ACCESS_FINE_LOCATION, false) ||
                 permissions.getOrDefault(Manifest.permission.ACCESS_COARSE_LOCATION, false)
+
         if (granted) {
             navController.navigate("dashboard") {
-                popUpTo(0)
+                popUpTo("login") { inclusive = true }
             }
         } else {
-            Toast.makeText(context, "Debe aceptar los permisos de ubicación para continuar", Toast.LENGTH_LONG).show()
+            Toast.makeText(context, "Se requieren permisos de ubicación para usar la app", Toast.LENGTH_LONG).show()
+
         }
     }
-
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(start = 40.dp, end = 40.dp, bottom = 20.dp),
+            .padding(40.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+
         Image(
             painter = painterResource(R.drawable.logo),
             contentDescription = "Logo",
@@ -83,54 +84,38 @@ fun RegistroScreen(
             OutlinedTextField(
                 value = estado.nombre,
                 onValueChange = viewModel::onNombreChange,
-                label = { Text("Nombre", color = Color.Black) },
+                label = { Text("Nombre") },
                 isError = estado.errores.nombre != null,
                 modifier = Modifier.fillMaxWidth(),
-                supportingText = {
-                    estado.errores.nombre?.let {
-                        Text(it, color = MaterialTheme.colorScheme.error)
-                    }
-                }
+                supportingText = { estado.errores.nombre?.let { Text(it, color = MaterialTheme.colorScheme.error) } }
             )
 
             OutlinedTextField(
                 value = estado.patente,
                 onValueChange = viewModel::onPatenteChange,
-                label = { Text("Patente", color = Color.Black) },
+                label = { Text("Patente") },
                 isError = estado.errores.patente != null,
                 modifier = Modifier.fillMaxWidth(),
-                supportingText = {
-                    estado.errores.patente?.let {
-                        Text(it, color = MaterialTheme.colorScheme.error)
-                    }
-                }
+                supportingText = { estado.errores.patente?.let { Text(it, color = MaterialTheme.colorScheme.error) } }
             )
 
             OutlinedTextField(
                 value = estado.correo,
                 onValueChange = viewModel::onCorreoChange,
-                label = { Text("Correo", color = Color.Black) },
+                label = { Text("Correo") },
                 isError = estado.errores.correo != null,
                 modifier = Modifier.fillMaxWidth(),
-                supportingText = {
-                    estado.errores.correo?.let {
-                        Text(it, color = MaterialTheme.colorScheme.error)
-                    }
-                }
+                supportingText = { estado.errores.correo?.let { Text(it, color = MaterialTheme.colorScheme.error) } }
             )
 
             OutlinedTextField(
                 value = estado.clave,
                 onValueChange = viewModel::onClaveChange,
-                label = { Text("Clave", color = Color.Black) },
-                visualTransformation = PasswordVisualTransformation(),
+                label = { Text("Clave") },
                 isError = estado.errores.clave != null,
                 modifier = Modifier.fillMaxWidth(),
-                supportingText = {
-                    estado.errores.clave?.let {
-                        Text(it, color = MaterialTheme.colorScheme.error)
-                    }
-                }
+                visualTransformation = PasswordVisualTransformation(),
+                supportingText = { estado.errores.clave?.let { Text(it, color = MaterialTheme.colorScheme.error) } }
             )
 
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -143,12 +128,21 @@ fun RegistroScreen(
 
             Button(
                 onClick = {
-                    // Lanzamos la solicitud de permisos
-                    locationPermissionLauncher.launch(
-                        arrayOf(
-                            Manifest.permission.ACCESS_FINE_LOCATION,
-                            Manifest.permission.ACCESS_COARSE_LOCATION
-                        )
+                    if (!estado.aceptaTerminos) {
+                        Toast.makeText(context, "Debe aceptar los términos", Toast.LENGTH_SHORT).show()
+                        return@Button
+                    }
+
+                    viewModel.registrarUsuario(
+                        onSuccess = {
+                            locationPermissionLauncher.launch(
+                                arrayOf(
+                                    Manifest.permission.ACCESS_FINE_LOCATION,
+                                    Manifest.permission.ACCESS_COARSE_LOCATION
+                                )
+                            )
+                            Toast.makeText(context, "Registro exitoso", Toast.LENGTH_SHORT).show()
+                        }
                     )
                 },
                 colors = ButtonDefaults.buttonColors(containerColor = Blue),

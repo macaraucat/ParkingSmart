@@ -23,6 +23,9 @@ import com.example.parkingsmart.view.PagoScreen
 import com.example.parkingsmart.viewmodel.UsuarioViewModel
 import com.example.parkingsmart.viewmodel.ParkingViewModel
 import com.example.parkingsmart.viewmodel.PagoViewModel
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import com.example.parkingsmart.model.db.ParkingDatabase
 
 class MainActivity : ComponentActivity() {
 
@@ -30,10 +33,24 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
+            val database = ParkingDatabase.getDatabase(applicationContext)
+            val dao = database.dao()
             val navController = rememberNavController()
-            val usuarioViewModel: UsuarioViewModel = viewModel()
-            val parkingViewModel: ParkingViewModel = viewModel()
-            val pagoViewModel: PagoViewModel = viewModel()
+
+            val viewModelFactory = object : ViewModelProvider.Factory {
+                override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                    return when {
+                        modelClass.isAssignableFrom(UsuarioViewModel::class.java) -> UsuarioViewModel(dao) as T
+                        modelClass.isAssignableFrom(ParkingViewModel::class.java) -> ParkingViewModel(dao) as T
+                        modelClass.isAssignableFrom(PagoViewModel::class.java) -> PagoViewModel(dao) as T
+                        else -> throw IllegalArgumentException("Unknown ViewModel class")
+                    }
+                }
+            }
+
+            val usuarioViewModel: UsuarioViewModel = viewModel(factory = viewModelFactory)
+            val parkingViewModel: ParkingViewModel = viewModel(factory = viewModelFactory)
+            val pagoViewModel: PagoViewModel = viewModel(factory = viewModelFactory)
 
             ParkingSmartTheme {
                 NavHost(navController = navController, startDestination = "login") {
@@ -56,6 +73,7 @@ class MainActivity : ComponentActivity() {
                         DashboardScreen(
                             navController = navController,
                             parkingViewModel = parkingViewModel,
+                            usuarioViewModel = usuarioViewModel,
                             onEspacioSeleccionado = {
                                 navController.navigate("parking_camera")
                             }
@@ -68,36 +86,42 @@ class MainActivity : ComponentActivity() {
 
                     composable("parking_screen") {
                         ParkingScreen(
-                            viewModel = parkingViewModel,
-                            onNavegarAlPago = { monto, tiempo ->
-                                navController.navigate("metodopago/$monto/$tiempo")
+                            parkingViewModel = parkingViewModel,
+                            usuarioViewModel = usuarioViewModel,
+                            onNavegarAlPago = { monto, tiempo, correo ->
+                                navController.navigate("metodopago/$monto/$tiempo/$correo")
                             }
                         )
                     }
 
                     composable("parking") {
                         ParkingScreen(
-                            viewModel = parkingViewModel,
-                            onNavegarAlPago = { monto, tiempo ->
-                                navController.navigate("metodopago/$monto/$tiempo")
+                            parkingViewModel = parkingViewModel,
+                            usuarioViewModel = usuarioViewModel,
+                            onNavegarAlPago = { monto, tiempo, correo ->
+                                navController.navigate("metodopago/$monto/$tiempo/$correo")
                             }
                         )
                     }
 
                     composable(
-                        route = "metodopago/{monto}/{tiempo}",
+                        // Agregamos {correo} a la ruta
+                        route = "metodopago/{monto}/{tiempo}/{correo}",
                         arguments = listOf(
                             navArgument("monto") { type = NavType.FloatType },
-                            navArgument("tiempo") { type = NavType.StringType }
+                            navArgument("tiempo") { type = NavType.StringType },
+                            navArgument("correo") { type = NavType.StringType } // Nuevo argumento
                         )
                     ) { backStackEntry ->
                         val monto = backStackEntry.arguments?.getFloat("monto")?.toDouble() ?: 0.0
                         val tiempo = backStackEntry.arguments?.getString("tiempo") ?: "00:00"
+                        val correo = backStackEntry.arguments?.getString("correo") ?: ""
 
                         MetodoPagoScreen(
-                            viewModel = pagoViewModel,
+                            viewModel = pagoViewModel, // Recuerda crear este VM con la Factory también
                             monto = monto,
                             tiempo = tiempo,
+                            correoUsuario = correo, // Pasamos el correo aquí
                             onPagoExitoso = {
                                 navController.navigate("pago/$monto/$tiempo")
                             }

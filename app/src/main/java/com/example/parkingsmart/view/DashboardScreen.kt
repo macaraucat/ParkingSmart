@@ -23,6 +23,7 @@ import androidx.core.app.ActivityCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.parkingsmart.viewmodel.ParkingViewModel
+import com.example.parkingsmart.viewmodel.UsuarioViewModel
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.CameraPosition
@@ -38,13 +39,14 @@ import com.google.maps.android.compose.rememberCameraPositionState
 fun DashboardScreen(
     navController: NavHostController,
     parkingViewModel: ParkingViewModel = viewModel(),
+    usuarioViewModel: UsuarioViewModel = viewModel(),
     onEspacioSeleccionado: () -> Unit
 ) {
     val context = LocalContext.current
     val fusedLocationClient = remember { LocationServices.getFusedLocationProviderClient(context) }
-    val uiState by parkingViewModel.uiState.collectAsState()
+    val parkingUiState by parkingViewModel.uiState.collectAsState()
+    val usuarioUiState by usuarioViewModel.uiState.collectAsState()
 
-    // Efecto para obtener la ubicación al entrar
     LaunchedEffect(Unit) {
         if (ActivityCompat.checkSelfPermission(
                 context,
@@ -64,21 +66,19 @@ fun DashboardScreen(
     }
 
     val cameraPositionState = rememberCameraPositionState {
-        position = CameraPosition.fromLatLngZoom(uiState.ubicacionActual, 15f)
+        position = CameraPosition.fromLatLngZoom(parkingUiState.ubicacionActual, 15f)
     }
 
-    // Sincronizamos la cámara si la ubicación cambia en el ViewModel
-    LaunchedEffect(uiState.ubicacionActual) {
+    LaunchedEffect(parkingUiState.ubicacionActual) {
         cameraPositionState.animate(
-            CameraUpdateFactory.newLatLngZoom(uiState.ubicacionActual, 15f)
+            CameraUpdateFactory.newLatLngZoom(parkingUiState.ubicacionActual, 15f)
         )
     }
 
-    val markerState = rememberMarkerState(position = uiState.ubicacionActual)
+    val markerState = rememberMarkerState(position = parkingUiState.ubicacionActual)
     
-    // Actualizamos el marcador si la ubicación cambia
-    LaunchedEffect(uiState.ubicacionActual) {
-        markerState.position = uiState.ubicacionActual
+    LaunchedEffect(parkingUiState.ubicacionActual) {
+        markerState.position = parkingUiState.ubicacionActual
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -137,7 +137,9 @@ fun DashboardScreen(
                             Button(
                                 onClick = {
                                     if (!esOcupado) {
-                                        parkingViewModel.seleccionarYActivarEspacio(numero)
+                                        val correo = usuarioUiState.correo
+                                        val patente = usuarioUiState.patente
+                                        parkingViewModel.seleccionarYActivarEspacio(numero, correo, patente)
                                         onEspacioSeleccionado()
                                     }
                                 },

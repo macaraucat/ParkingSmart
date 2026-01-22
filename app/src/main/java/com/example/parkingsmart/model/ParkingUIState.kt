@@ -3,6 +3,7 @@ package com.example.parkingsmart.model
 import com.google.android.gms.maps.model.LatLng
 
 data class ParkingUIState(
+    val idTicket: Int = 0,
     val numeroEspacio: Int = 0,
     val estaActivo: Boolean = false,
     val tiempoTranscurridoSegundos: Long = 0,
