@@ -29,7 +29,7 @@ class ParkingViewModel : ViewModel() {
         _uiState.update {
             it.copy(
                 numeroEspacio = numeroEspacio,
-                estaActivo = true,
+                estaActivo = false, // Ahora se inicia solo al confirmar
                 tiempoTranscurridoSegundos = 0,
                 tiempoFormateado = "0:00",
                 costoActual = 0.0,
@@ -37,11 +37,14 @@ class ParkingViewModel : ViewModel() {
                 estaCargando = false
             )
         }
-        iniciarCronometro()
+        // Ya no se llama a iniciarCronometro() aquí automáticamente
     }
 
 
     fun iniciarCronometro() {
+        // Evitar múltiples cronómetros si ya está activo
+        if (_uiState.value.estaActivo && timerJob?.isActive == true) return
+
         timerJob?.cancel()
 
         _uiState.update { it.copy(estaActivo = true) }

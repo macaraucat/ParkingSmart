@@ -1,3 +1,5 @@
+package com.example.parkingsmart.view
+
 import android.content.ContentValues
 import android.content.Context
 import android.os.Build
@@ -38,7 +40,6 @@ fun CameraScreen(modifier: Modifier = Modifier) {
     val cameraProviderFuture = remember { ProcessCameraProvider.getInstance(context) }
 
     Box(modifier = modifier.fillMaxSize()) {
-        // Vista previa de la cámara
         AndroidView(
             factory = { ctx ->
                 val previewView = PreviewView(ctx)
@@ -55,7 +56,7 @@ fun CameraScreen(modifier: Modifier = Modifier) {
 
                     try {
                         cameraProvider.unbindAll()
-                        // 2. Vincular ImageCapture junto con el Preview
+                        // Vincular ImageCapture junto con el Preview
                         cameraProvider.bindToLifecycle(
                             lifecycleOwner,
                             cameraSelector,

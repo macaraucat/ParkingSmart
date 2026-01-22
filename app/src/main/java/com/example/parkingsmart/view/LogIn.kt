@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -69,6 +70,7 @@ fun LoginScreen(
                 modifier = Modifier.fillMaxWidth(),
                 onValueChange = viewModel::onPatenteChange,
                 label = { Text("Patente", color = Color.Black) },
+                textStyle = TextStyle(color = Color.Black),
                 isError = estado.errores.patente != null,
                 supportingText = {
                     estado.errores.patente?.let { Text(it, color = MaterialTheme.colorScheme.error) }
@@ -80,6 +82,7 @@ fun LoginScreen(
                 modifier = Modifier.fillMaxWidth(),
                 onValueChange = viewModel::onClaveChange,
                 label = { Text("Clave", color = Color.Black) },
+                textStyle = TextStyle(color = Color.Black),
                 visualTransformation = PasswordVisualTransformation(),
                 isError = estado.errores.clave != null,
                 supportingText = {

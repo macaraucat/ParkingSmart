@@ -31,6 +31,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.navigation.NavController
 import com.example.parkingsmart.ui.theme.Blue
@@ -41,15 +42,15 @@ fun RegistroScreen(
     viewModel: UsuarioViewModel
 ) {
     val estado by viewModel.estado.collectAsState()
-
     val context = LocalContext.current
 
     val locationPermissionLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
     ) { permissions ->
-        val granted = permissions.getOrDefault(Manifest.permission.ACCESS_FINE_LOCATION, false) ||
-                permissions.getOrDefault(Manifest.permission.ACCESS_COARSE_LOCATION, false)
-        if (granted) {
+        val fineGranted = permissions[Manifest.permission.ACCESS_FINE_LOCATION] ?: false
+        val coarseGranted = permissions[Manifest.permission.ACCESS_COARSE_LOCATION] ?: false
+        
+        if (fineGranted || coarseGranted) {
             navController.navigate("dashboard") {
                 popUpTo(0)
             }
@@ -84,6 +85,7 @@ fun RegistroScreen(
                 value = estado.nombre,
                 onValueChange = viewModel::onNombreChange,
                 label = { Text("Nombre", color = Color.Black) },
+                textStyle = TextStyle(color = Color.Black),
                 isError = estado.errores.nombre != null,
                 modifier = Modifier.fillMaxWidth(),
                 supportingText = {
@@ -97,6 +99,7 @@ fun RegistroScreen(
                 value = estado.patente,
                 onValueChange = viewModel::onPatenteChange,
                 label = { Text("Patente", color = Color.Black) },
+                textStyle = TextStyle(color = Color.Black),
                 isError = estado.errores.patente != null,
                 modifier = Modifier.fillMaxWidth(),
                 supportingText = {
@@ -110,6 +113,7 @@ fun RegistroScreen(
                 value = estado.correo,
                 onValueChange = viewModel::onCorreoChange,
                 label = { Text("Correo", color = Color.Black) },
+                textStyle = TextStyle(color = Color.Black),
                 isError = estado.errores.correo != null,
                 modifier = Modifier.fillMaxWidth(),
                 supportingText = {
@@ -123,6 +127,7 @@ fun RegistroScreen(
                 value = estado.clave,
                 onValueChange = viewModel::onClaveChange,
                 label = { Text("Clave", color = Color.Black) },
+                textStyle = TextStyle(color = Color.Black),
                 visualTransformation = PasswordVisualTransformation(),
                 isError = estado.errores.clave != null,
                 modifier = Modifier.fillMaxWidth(),
@@ -143,13 +148,18 @@ fun RegistroScreen(
 
             Button(
                 onClick = {
-                    // Lanzamos la solicitud de permisos
-                    locationPermissionLauncher.launch(
-                        arrayOf(
-                            Manifest.permission.ACCESS_FINE_LOCATION,
-                            Manifest.permission.ACCESS_COARSE_LOCATION
-                        )
-                    )
+                    if (viewModel.validarRegistro()) {
+                        if (estado.aceptaTerminos) {
+                            locationPermissionLauncher.launch(
+                                arrayOf(
+                                    Manifest.permission.ACCESS_FINE_LOCATION,
+                                    Manifest.permission.ACCESS_COARSE_LOCATION
+                                )
+                            )
+                        } else {
+                            Toast.makeText(context, "Debe aceptar los términos y condiciones", Toast.LENGTH_SHORT).show()
+                        }
+                    }
                 },
                 colors = ButtonDefaults.buttonColors(containerColor = Blue),
                 modifier = Modifier.fillMaxWidth().height(44.dp),
