@@ -1,6 +1,5 @@
 package com.example.parkingsmart.view
 
-
 import android.content.ContentValues
 import android.content.Context
 import android.graphics.Bitmap
@@ -17,7 +16,15 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.OutputStream
 
-
+/**
+ * Realiza una captura de pantalla de la ventana actual.
+ *
+ * Utiliza [PixelCopy] para crear un [Bitmap] de la vista raíz de la ventana. Si tiene éxito,
+ * guarda el bitmap en la galería. Muestra un [Toast] para indicar el éxito o el fracaso.
+ *
+ * @param window La [Window] de la que se tomará la captura de pantalla.
+ * @param context El [Context] actual, utilizado para mostrar Toasts.
+ */
 fun takeScreenshot(window: Window, context: Context) {
     val view = window.decorView.rootView
     val bitmap = Bitmap.createBitmap(view.width, view.height, Bitmap.Config.ARGB_8888)
@@ -43,6 +50,17 @@ fun takeScreenshot(window: Window, context: Context) {
     }
 }
 
+/**
+ * Guarda un [Bitmap] en la galería de imágenes del dispositivo.
+ *
+ * Esta función maneja las diferencias entre las versiones de Android para el almacenamiento de medios.
+ * Para Android Q (API 29) y superior, utiliza [MediaStore] con el API de Scoped Storage.
+ * Para versiones anteriores, guarda directamente en el directorio público de imágenes y utiliza
+ * [MediaScannerConnection] para que el archivo sea visible en la galería.
+ *
+ * @param context El [Context] actual, utilizado para acceder al ContentResolver.
+ * @param bitmap El [Bitmap] que se guardará.
+ */
 fun saveBitmapToGallery(context: Context, bitmap: Bitmap) {
     val filename = "FOTO_${System.currentTimeMillis()}.jpg"
     var fos: OutputStream? = null

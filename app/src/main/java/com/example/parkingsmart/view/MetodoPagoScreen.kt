@@ -8,10 +8,21 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.example.parkingsmart.ui.theme.Gray
-import com.example.parkingsmart.ui.theme.LightBlue
 import com.example.parkingsmart.viewmodel.PagoViewModel
 
+/**
+ * Composable que representa la pantalla para seleccionar un método de pago.
+ *
+ * Esta pantalla permite al usuario elegir entre diferentes métodos de pago (Efectivo o Tarjeta).
+ * Muestra el monto total a pagar y un indicador de progreso mientras se procesa el pago.
+ * Una vez que el pago es exitoso, navega a la siguiente pantalla.
+ *
+ * @param viewModel El [PagoViewModel] que gestiona el estado y la lógica del pago.
+ * @param monto El monto total a pagar.
+ * @param tiempo El tiempo total de estacionamiento.
+ * @param correoUsuario El correo electrónico del usuario para asociar el pago.
+ * @param onPagoExitoso Una función de devolución de llamada que se invoca cuando el pago se ha completado con éxito.
+ */
 @Composable
 fun MetodoPagoScreen(
     viewModel: PagoViewModel,
@@ -22,10 +33,12 @@ fun MetodoPagoScreen(
 ) {
     val state by viewModel.uiState.collectAsState()
 
+    // Inicializa el estado del pago con el monto y tiempo recibidos.
     LaunchedEffect(Unit) {
         viewModel.inicializarPago(monto, tiempo)
     }
 
+    // Observa el estado de pago exitoso para navegar a la siguiente pantalla.
     LaunchedEffect(state.pagoExitoso) {
         if (state.pagoExitoso) onPagoExitoso()
     }
@@ -45,10 +58,12 @@ fun MetodoPagoScreen(
             modifier = Modifier.padding(top = 16.dp, bottom = 16.dp)
         )
 
+        // Muestra un indicador de progreso si el pago se está procesando.
         if (state.estaProcesando) {
-            CircularProgressIndicator(color = Color.Blue) // Ajusta tu color
+            CircularProgressIndicator(color = Color.Blue) // Puedes personalizar el color.
             Text("Procesando pago...", modifier = Modifier.padding(top = 8.dp))
         } else {
+            // Botones para seleccionar el método de pago.
             BotonMetodoPago("Efectivo") {
                 viewModel.seleccionarMetodoPago("Efectivo")
                 viewModel.procesarPago(correoUsuario)
@@ -60,12 +75,19 @@ fun MetodoPagoScreen(
             }
         }
 
+        // Muestra un mensaje de error si ocurre alguno.
         state.mensajeError?.let {
             Text(it, color = Color.Red, modifier = Modifier.padding(top = 8.dp))
         }
     }
 }
 
+/**
+ * Un Composable de botón estilizado para las opciones de método de pago.
+ *
+ * @param texto El texto que se mostrará en el botón.
+ * @param onClick La acción que se ejecutará cuando se haga clic en el botón.
+ */
 @Composable
 fun BotonMetodoPago(texto: String, onClick: () -> Unit) {
     Button(

@@ -18,10 +18,18 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.parkingsmart.R
-import com.example.parkingsmart.ui.theme.Blue
-import com.example.parkingsmart.ui.theme.Gray
 import com.example.parkingsmart.viewmodel.UsuarioViewModel
 
+/**
+ * Composable que representa la pantalla de inicio de sesión de la aplicación.
+ *
+ * Esta pantalla permite a los usuarios iniciar sesión con su correo electrónico y contraseña.
+ * También proporciona una opción para navegar a la pantalla de registro. Una vez que el
+ * inicio de sesión es exitoso, solicita permisos de ubicación antes de navegar al dashboard.
+ *
+ * @param navController El [NavController] utilizado para la navegación entre pantallas.
+ * @param viewModel El [UsuarioViewModel] que gestiona el estado y la lógica de la interfaz de usuario.
+ */
 @Composable
 fun LoginScreen(
     navController: NavController,
@@ -30,17 +38,20 @@ fun LoginScreen(
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
 
+    // Lanzador para solicitar permisos de ubicación.
     val locationPermissionLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
     ) { permissions ->
         val fineGranted = permissions[Manifest.permission.ACCESS_FINE_LOCATION] ?: false
         val coarseGranted = permissions[Manifest.permission.ACCESS_COARSE_LOCATION] ?: false
 
+        // Si se otorgan los permisos, navega al dashboard.
         if (fineGranted || coarseGranted) {
             navController.navigate("dashboard") {
                 popUpTo("login") { inclusive = true }
             }
         } else {
+            // Muestra un mensaje si los permisos son denegados.
             Toast.makeText(context, "Se requieren permisos para continuar", Toast.LENGTH_LONG).show()
         }
     }
@@ -67,6 +78,7 @@ fun LoginScreen(
 
         Column(modifier = Modifier.fillMaxWidth()) {
 
+            // Campo de texto para el correo electrónico.
             OutlinedTextField(
                 value = uiState.correo,
                 modifier = Modifier.fillMaxWidth(),
@@ -82,6 +94,7 @@ fun LoginScreen(
                 )
             )
 
+            // Campo de texto para la contraseña.
             OutlinedTextField(
                 value = uiState.clave,
                 modifier = Modifier.fillMaxWidth(),
@@ -98,10 +111,12 @@ fun LoginScreen(
                 )
             )
 
+            // Botón para iniciar sesión.
             Button(
                 onClick = {
                     viewModel.loginUsuario(
                         onSuccess = {
+                            // Al iniciar sesión con éxito, solicita permisos.
                             locationPermissionLauncher.launch(
                                 arrayOf(
                                     Manifest.permission.ACCESS_FINE_LOCATION,
@@ -121,6 +136,7 @@ fun LoginScreen(
                 Text("Iniciar Sesión", style = MaterialTheme.typography.labelLarge)
             }
 
+            // Botón para navegar a la pantalla de registro.
             Button(
                 onClick = {
                     viewModel.limpiarDatos()

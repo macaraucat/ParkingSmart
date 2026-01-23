@@ -12,28 +12,42 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
+/**
+ * ViewModel para gestionar la lógica y el estado de la interfaz de usuario para el registro y el inicio de sesión de usuarios.
+ *
+ * @param dao El objeto de acceso a datos (DAO) para interactuar con la base de datos.
+ */
 class UsuarioViewModel(private val dao: ParkingDao) : ViewModel() {
 
     private val _uiState = MutableStateFlow(UsuarioUIState())
     val uiState: StateFlow<UsuarioUIState> = _uiState.asStateFlow()
 
+    /** Actualiza el nombre en el estado de la interfaz de usuario. */
     fun onNombreChange(valor: String) {
         _uiState.update { it.copy(nombre = valor, errores = it.errores.copy(nombre = null)) }
     }
+    /** Actualiza la patente en el estado de la interfaz de usuario. */
     fun onPatenteChange(valor: String) {
         _uiState.update { it.copy(patente = valor, errores = it.errores.copy(patente = null)) }
     }
+    /** Actualiza el correo en el estado de la interfaz de usuario. */
     fun onCorreoChange(valor: String) {
         _uiState.update { it.copy(correo = valor, errores = it.errores.copy(correo = null)) }
     }
+    /** Actualiza la clave en el estado de la interfaz de usuario. */
     fun onClaveChange(valor: String) {
         _uiState.update { it.copy(clave = valor, errores = it.errores.copy(clave = null)) }
     }
+    /** Actualiza el estado de aceptación de términos en la interfaz de usuario. */
     fun onAceptarTerminosChange(valor: Boolean) {
         _uiState.update { it.copy(aceptaTerminos = valor) }
     }
 
-
+    /**
+     * Registra un nuevo usuario en la base de datos después de validar los datos.
+     *
+     * @param onSuccess Callback que se ejecuta si el registro es exitoso (aunque no se llama actualmente en la implementación).
+     */
     fun registrarUsuario(onSuccess: () -> Unit) {
         if (!validarFormatoRegistro()) return
 
@@ -55,8 +69,7 @@ class UsuarioViewModel(private val dao: ParkingDao) : ViewModel() {
                 )
 
                 dao.registrarUsuario(nuevoUsuario)
-
-
+                // TODO: Llamar a onSuccess() aquí si es necesario.
 
             } catch (e: Exception) {
                 println("Error al registrar: ${e.message}")
@@ -64,7 +77,11 @@ class UsuarioViewModel(private val dao: ParkingDao) : ViewModel() {
         }
     }
 
-
+    /**
+     * Autentica a un usuario con el correo y la clave proporcionados.
+     *
+     * @param onSuccess Callback que se ejecuta si el inicio de sesión es exitoso.
+     */
     fun loginUsuario(onSuccess: () -> Unit) {
         if (!validarFormatoLogin()) return
 
@@ -84,7 +101,11 @@ class UsuarioViewModel(private val dao: ParkingDao) : ViewModel() {
         }
     }
 
-
+    /**
+     * Valida los campos del formulario de inicio de sesión.
+     *
+     * @return `true` si la validación es exitosa, `false` en caso contrario.
+     */
     private fun validarFormatoLogin(): Boolean {
         val estadoActual = _uiState.value
         val errores = UsuarioErrores(
@@ -97,6 +118,11 @@ class UsuarioViewModel(private val dao: ParkingDao) : ViewModel() {
         return !hayErrores
     }
 
+    /**
+     * Valida los campos del formulario de registro.
+     *
+     * @return `true` si la validación es exitosa, `false` en caso contrario.
+     */
     private fun validarFormatoRegistro(): Boolean {
         val estadoActual = _uiState.value
         val errores = UsuarioErrores(
@@ -118,6 +144,9 @@ class UsuarioViewModel(private val dao: ParkingDao) : ViewModel() {
         return !hayErrores
     }
 
+    /**
+     * Limpia todos los datos del estado de la interfaz de usuario, restableciendo el formulario.
+     */
     fun limpiarDatos() {
         _uiState.value = UsuarioUIState()
     }

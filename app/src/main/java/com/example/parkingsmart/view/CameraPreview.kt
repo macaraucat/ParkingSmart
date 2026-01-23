@@ -1,3 +1,5 @@
+package com.example.parkingsmart.view
+
 import android.content.ContentValues
 import android.content.Context
 import android.os.Build
@@ -30,6 +32,14 @@ import androidx.core.content.ContextCompat
 import java.text.SimpleDateFormat
 import java.util.Locale
 
+/**
+ * Un composable que muestra una vista previa de la cámara y un botón para tomar fotos.
+ *
+ * Este composable utiliza CameraX para mostrar una vista previa de la cámara trasera del dispositivo.
+ * Incluye un botón flotante que permite al usuario capturar una foto.
+ *
+ * @param modifier El modificador que se aplicará a la pantalla de la cámara.
+ */
 @Composable
 fun CameraScreen(modifier: Modifier = Modifier) {
     val context = LocalContext.current
@@ -61,7 +71,7 @@ fun CameraScreen(modifier: Modifier = Modifier) {
                             imageCapture
                         )
                     } catch (e: Exception) {
-                        Log.e("CameraScreen", "Error binding camera", e)
+                        Log.e("CameraScreen", "Error al vincular la cámara", e)
                     }
                 }, executor)
 
@@ -77,11 +87,17 @@ fun CameraScreen(modifier: Modifier = Modifier) {
                 .padding(bottom = 50.dp)
                 .size(80.dp)
         ) {
-            Icon(Icons.Default.CameraAlt, contentDescription = "Take Photo")
+            Icon(Icons.Default.CameraAlt, contentDescription = "Tomar foto")
         }
     }
 }
 
+/**
+ * Captura una foto usando el caso de uso de captura de imagen proporcionado y la guarda en el almacenamiento.
+ *
+ * @param context El contexto actual.
+ * @param imageCapture El caso de uso de [ImageCapture] utilizado para tomar la foto.
+ */
 private fun takePhoto(context: Context, imageCapture: ImageCapture) {
     val name = SimpleDateFormat("yyyy-MM-dd-HH-mm-ss-SSS", Locale.US)
         .format(System.currentTimeMillis())
@@ -104,7 +120,7 @@ private fun takePhoto(context: Context, imageCapture: ImageCapture) {
         object : ImageCapture.OnImageSavedCallback {
             override fun onImageSaved(output: ImageCapture.OutputFileResults) {
                 Toast.makeText(context, "¡Foto guardada con éxito!", Toast.LENGTH_SHORT).show()
-                Log.d("CameraScreen", "Photo capture succeeded: ${output.savedUri}")
+                Log.d("CameraScreen", "La captura de la foto tuvo éxito: ${output.savedUri}")
             }
 
             override fun onError(exc: ImageCaptureException) {

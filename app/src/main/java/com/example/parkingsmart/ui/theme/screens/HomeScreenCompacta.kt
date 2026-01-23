@@ -18,7 +18,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.parkingsmart.ui.theme.utils.obtenerWindowSizeClass
 
+/**
+ * Este archivo contiene la implementación de la pantalla de inicio para anchos de ventana compactos.
+ */
 
+/**
+ * Composable que define la interfaz de usuario para la pantalla de inicio en un tamaño de ventana compacto.
+ *
+ * Utiliza un [Scaffold] con una [TopAppBar] y un [Column] para organizar el contenido.
+ * Muestra un mensaje de bienvenida y un botón de ejemplo.
+ */
 @OptIn(ExperimentalMaterial3WindowSizeClassApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreenCompacta() {
@@ -47,6 +56,12 @@ fun HomeScreenCompacta() {
     }
 }
 
+/**
+ * Composable que actúa como un enrutador para la pantalla de inicio, seleccionando el diseño
+ * apropiado según la clase de tamaño de la ventana.
+ *
+ * Actualmente, solo muestra [HomeScreenCompacta] para la clase de ancho de ventana [WindowWidthSizeClass.Compact].
+ */
 @Composable
 fun HomeScreen(){
     val windowSizeClass = obtenerWindowSizeClass()
@@ -55,6 +70,12 @@ fun HomeScreen(){
     }
 }
 
+/**
+ * Vista previa para la pantalla de inicio en un diseño compacto.
+ *
+ * Esta función de previsualización muestra cómo se verá [HomeScreenCompacta] en un dispositivo
+ * con un ancho de 480 dp y una altura de 600 dp.
+ */
 @Preview("Compact", widthDp = 480, heightDp = 600)
 @Composable
 fun PreviewCompact(){

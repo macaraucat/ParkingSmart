@@ -36,6 +36,16 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.navigation.NavController
 import com.example.parkingsmart.ui.theme.Blue
 
+/**
+ * Composable que representa la pantalla de registro de nuevos usuarios.
+ *
+ * Esta pantalla contiene un formulario para que los usuarios ingresen su nombre, patente, correo
+ * electrónico y contraseña. También incluye una casilla de verificación para aceptar los términos y condiciones.
+ * Al registrarse con éxito, solicita permisos de ubicación y navega al dashboard.
+ *
+ * @param navController El [NavController] utilizado para la navegación entre pantallas.
+ * @param viewModel El [UsuarioViewModel] que gestiona el estado y la lógica de la interfaz de usuario.
+ */
 @Composable
 fun RegistroScreen(
     navController: NavController,
@@ -44,6 +54,7 @@ fun RegistroScreen(
     val estado by viewModel.uiState.collectAsState()
     val context = LocalContext.current
 
+    // Lanzador para solicitar permisos de ubicación después del registro.
     val locationPermissionLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
     ) { permissions ->
@@ -51,12 +62,13 @@ fun RegistroScreen(
                 permissions.getOrDefault(Manifest.permission.ACCESS_COARSE_LOCATION, false)
 
         if (granted) {
+            // Navega al dashboard si se otorgan los permisos.
             navController.navigate("dashboard") {
                 popUpTo("login") { inclusive = true }
             }
         } else {
+            // Muestra un mensaje si los permisos son denegados.
             Toast.makeText(context, "Se requieren permisos de ubicación para usar la app", Toast.LENGTH_LONG).show()
-
         }
     }
 
@@ -82,6 +94,7 @@ fun RegistroScreen(
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            // Campos de texto para el registro de datos del usuario.
             OutlinedTextField(
                 value = estado.nombre,
                 onValueChange = viewModel::onNombreChange,
@@ -135,6 +148,7 @@ fun RegistroScreen(
                 )
             )
 
+            // Casilla de verificación para los términos y condiciones.
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Checkbox(
                     checked = estado.aceptaTerminos,
@@ -143,6 +157,7 @@ fun RegistroScreen(
                 Text("Acepto los términos y condiciones", Modifier.padding(end = 20.dp))
             }
 
+            // Botón para enviar el formulario de registro.
             Button(
                 onClick = {
                     if (!estado.aceptaTerminos) {
@@ -152,6 +167,7 @@ fun RegistroScreen(
 
                     viewModel.registrarUsuario(
                         onSuccess = {
+                            // Solicita permisos de ubicación al registrarse con éxito.
                             locationPermissionLauncher.launch(
                                 arrayOf(
                                     Manifest.permission.ACCESS_FINE_LOCATION,

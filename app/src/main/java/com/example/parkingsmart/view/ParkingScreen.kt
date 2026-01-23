@@ -29,15 +29,29 @@ import com.example.parkingsmart.ui.theme.White
 import com.example.parkingsmart.viewmodel.ParkingViewModel
 import com.example.parkingsmart.viewmodel.UsuarioViewModel
 
+/**
+ * Composable que muestra la pantalla de estacionamiento activo.
+ *
+ * Esta pantalla muestra el número de espacio de estacionamiento, el tiempo transcurrido
+ * y el costo actual. También proporciona un botón para generar una boleta de pago y
+ * navegar a la pantalla de pago.
+ *
+ * @param parkingViewModel El [ParkingViewModel] que gestiona el estado del estacionamiento.
+ * @param usuarioViewModel El [UsuarioViewModel] para acceder a la información del usuario (por ejemplo, el correo electrónico).
+ * @param onNavegarAlPago Una función de devolución de llamada que se invoca cuando el usuario
+ * presiona el botón para generar la boleta. Pasa el costo, el tiempo formateado y el correo electrónico
+ * del usuario a la pantalla siguiente.
+ */
 @Composable
 fun ParkingScreen(
-    parkingViewModel: ParkingViewModel, // Quitamos el = viewModel()
-    usuarioViewModel: UsuarioViewModel, // Quitamos el = viewModel()
+    parkingViewModel: ParkingViewModel,
+    usuarioViewModel: UsuarioViewModel,
     onNavegarAlPago: (Double, String, String) -> Unit
 ) {
     val parkingUiState by parkingViewModel.uiState.collectAsState()
     val usuarioUiState by usuarioViewModel.uiState.collectAsState()
 
+    // Inicia el cronómetro cuando el composable entra en la composición.
     LaunchedEffect(Unit) {
         parkingViewModel.iniciarCronometro()
     }
@@ -49,6 +63,7 @@ fun ParkingScreen(
     ) {
         Text("Estacionamiento Activo", style = MaterialTheme.typography.headlineMedium)
 
+        // Tarjeta que muestra la información del estacionamiento.
         Card(
             elevation = CardDefaults.cardElevation(4.dp),
             colors = CardDefaults.cardColors(containerColor = White),
@@ -59,6 +74,7 @@ fun ParkingScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
+                // Muestra el número de espacio.
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Text("Espacio", color = Gray)
                     Text("#${parkingUiState.numeroEspacio}", style = MaterialTheme.typography.displayMedium)
@@ -66,11 +82,13 @@ fun ParkingScreen(
 
                 HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
 
+                // Muestra el tiempo transcurrido.
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Text("Tiempo estacionado", color = Gray)
                     Text(parkingUiState.tiempoFormateado, style = MaterialTheme.typography.displayLarge)
                 }
 
+                // Muestra el costo actual y la tarifa.
                 Card(
                     colors = CardDefaults.cardColors(containerColor = Color(0xFFF5F5F5))
                 ) {
@@ -86,6 +104,7 @@ fun ParkingScreen(
             }
         }
 
+        // Botón para generar la boleta de pago.
         Button(
             onClick = {
                 onNavegarAlPago(parkingUiState.costoActual, parkingUiState.tiempoFormateado, usuarioUiState.correo)

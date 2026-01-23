@@ -6,7 +6,14 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 
+/**
+ * Este archivo define la tipografía de la aplicación.
+ *
+ * Contiene los estilos de texto personalizados que se utilizan en toda la interfaz de usuario
+ * para garantizar la coherencia visual.
+ */
 val Typography = Typography(
+    /** Estilo para títulos grandes. */
     headlineLarge = TextStyle(
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight.SemiBold,
@@ -15,6 +22,7 @@ val Typography = Typography(
         letterSpacing = 0.5.sp,
     ),
 
+    /** Estilo para títulos medianos. */
     headlineMedium = TextStyle(
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight.SemiBold,
@@ -23,6 +31,7 @@ val Typography = Typography(
         color = DarkBlue
     ),
 
+    /** Estilo para títulos pequeños. */
     headlineSmall = TextStyle(
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight.Light,
@@ -30,6 +39,7 @@ val Typography = Typography(
         lineHeight = 26.sp
     ),
 
+    /** Estilo para subtítulos medianos. */
     titleMedium = TextStyle(
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight.Bold,
@@ -37,6 +47,7 @@ val Typography = Typography(
         lineHeight = 24.sp
     ),
 
+    /** Estilo para subtítulos pequeños. */
     titleSmall = TextStyle(
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight.Bold,
@@ -45,6 +56,7 @@ val Typography = Typography(
         color = Gray
     ),
 
+    /** Estilo para etiquetas grandes. */
     labelLarge = TextStyle(
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight.SemiBold,
@@ -54,6 +66,7 @@ val Typography = Typography(
         color = White
     ),
 
+    /** Estilo para etiquetas medianas. */
     labelMedium = TextStyle(
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight.SemiBold,
@@ -62,6 +75,7 @@ val Typography = Typography(
         color = DarkRed
     ),
 
+    /** Estilo para texto de visualización grande. */
     displayLarge = TextStyle(
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight.Bold,
@@ -69,6 +83,7 @@ val Typography = Typography(
         color = Black
     ),
 
+    /** Estilo para texto de visualización mediano. */
     displayMedium = TextStyle(
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight.Bold,

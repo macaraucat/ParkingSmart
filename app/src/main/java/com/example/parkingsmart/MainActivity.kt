@@ -27,8 +27,24 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.parkingsmart.repository.ParkingDatabase
 
+/**
+ * Actividad principal de la aplicación.
+ *
+ * Esta actividad es el punto de entrada de la aplicación y se encarga de configurar la navegación
+ * y la inyección de dependencias para los ViewModels.
+ */
 class MainActivity : ComponentActivity() {
 
+    /**
+     * Se llama cuando se crea la actividad.
+     *
+     * Se encarga de inicializar la interfaz de usuario, configurar la base de datos,
+     * el ViewModelFactory y el grafo de navegación con Jetpack Compose.
+     *
+     * @param savedInstanceState Si la actividad se reinicia después de haber sido cerrada,
+     * este Bundle contiene los datos que proporcionó más recientemente en onSaveInstanceState(Bundle).
+     * En caso contrario, es nulo.
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -37,6 +53,7 @@ class MainActivity : ComponentActivity() {
             val dao = database.dao()
             val navController = rememberNavController()
 
+            // Fábrica para crear instancias de los ViewModels con sus dependencias.
             val viewModelFactory = object : ViewModelProvider.Factory {
                 override fun <T : ViewModel> create(modelClass: Class<T>): T {
                     return when {
@@ -53,6 +70,7 @@ class MainActivity : ComponentActivity() {
             val pagoViewModel: PagoViewModel = viewModel(factory = viewModelFactory)
 
             ParkingSmartTheme {
+                // Configuración del grafo de navegación de la aplicación.
                 NavHost(navController = navController, startDestination = "login") {
 
                     composable("login") {
@@ -146,13 +164,20 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    /**
+     * Vista previa para la navegación de la aplicación en el editor de Android Studio.
+     *
+     * Esta función se utiliza para previsualizar el tema de la aplicación.
+     * La navegación real no se previsualiza aquí debido a la complejidad de la
+     * inicialización de los ViewModels.
+     */
     @Preview(showBackground = true)
     @Composable
     fun AppNavigationPreview() {
         val navController = rememberNavController()
 
         ParkingSmartTheme {
-            // Simplified for preview if needed, or better, don't use it if it depends on complex factory
+            // Simplificado para la vista previa si es necesario, o mejor, no usarlo si depende de una fábrica compleja.
         }
     }
 }

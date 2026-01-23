@@ -1,6 +1,6 @@
 package com.example.parkingsmart.view
 
-import CameraScreen
+
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -25,8 +25,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -38,6 +36,18 @@ import androidx.navigation.NavController
 import com.example.parkingsmart.R
 import com.example.parkingsmart.viewmodel.ParkingViewModel
 
+/**
+ * Composable que representa la pantalla principal de estacionamiento, que incluye una opción de cámara.
+ *
+ * Esta pantalla ofrece dos funciones principales:
+ * 1. Confirmar el estacionamiento, lo que inicia un cronómetro y navega a la pantalla de seguimiento del estacionamiento.
+ * 2. Abrir la cámara para reportar una anomalía si el espacio seleccionado está ocupado.
+ *
+ * Gestiona la solicitud de permisos de la cámara y alterna entre la vista de información y la vista de la cámara.
+ *
+ * @param navController El [NavController] para la navegación entre pantallas.
+ * @param viewModel El [ParkingViewModel] que gestiona el estado y la lógica del estacionamiento.
+ */
 @Composable
 fun ParkingMainScreen(
     navController: NavController,
@@ -46,6 +56,7 @@ fun ParkingMainScreen(
     var hasCameraPermission by remember { mutableStateOf(false) }
     var showCamera by remember { mutableStateOf(false) }
 
+    // Lanzador para solicitar el permiso de la cámara.
     val launcher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { isGranted -> hasCameraPermission = isGranted }
@@ -55,12 +66,14 @@ fun ParkingMainScreen(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        // Si `showCamera` es falso, muestra la pantalla de información.
         if (!showCamera) {
             Image(
                 painter = painterResource(id = R.drawable.car),
                 contentDescription = "Auto Estacionado",
                 modifier = Modifier.size(400.dp))
 
+            // Botón para confirmar el estacionamiento e iniciar el cronómetro.
             Button(
                 onClick = { 
                     viewModel.iniciarCronometro()
@@ -75,6 +88,7 @@ fun ParkingMainScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
+            // Botón para abrir la cámara.
             Button(
                 onClick = {
                     if (hasCameraPermission) {
@@ -90,6 +104,7 @@ fun ParkingMainScreen(
                 Text("Abrir cámara", style = MaterialTheme.typography.labelLarge)
             }
 
+            // Tarjeta con texto informativo.
             Card(
                 colors = CardDefaults.cardColors(containerColor = Color(0xFFEAEAEA)),
                 shape = RoundedCornerShape(12.dp),
@@ -104,8 +119,10 @@ fun ParkingMainScreen(
                 )
             }
         } else {
+            // Si `showCamera` es verdadero, muestra la vista de la cámara.
             Box(modifier = Modifier.fillMaxSize()) {
                 CameraScreen()
+                // Botón para volver a la pantalla de información.
                 IconButton(
                     onClick = { showCamera = false },
                     modifier = Modifier.padding(top = 10.dp).align(Alignment.TopStart)) {

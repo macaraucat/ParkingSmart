@@ -34,11 +34,23 @@ import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.MapUiSettings
 import com.google.maps.android.compose.rememberCameraPositionState
 
+/**
+ * Composable que representa el panel principal de la aplicación.
+ *
+ * Muestra la ubicación actual del usuario en un mapa de Google, una lista de espacios
+ * de estacionamiento disponibles y un botón para cerrar sesión. Permite al usuario
+ * seleccionar un espacio de estacionamiento disponible, lo que lo lleva a la pantalla de la cámara.
+ *
+ * @param navController El [NavHostController] para la navegación.
+ * @param parkingViewModel El [ParkingViewModel] que gestiona el estado del estacionamiento.
+ * @param usuarioViewModel El [UsuarioViewModel] para acceder a la información del usuario.
+ * @param onEspacioSeleccionado Callback que se invoca cuando se selecciona un espacio.
+ */
 @Composable
 fun DashboardScreen(
     navController: NavHostController,
-    parkingViewModel: ParkingViewModel, // Quitamos el = viewModel()
-    usuarioViewModel: UsuarioViewModel, // Quitamos el = viewModel()
+    parkingViewModel: ParkingViewModel,
+    usuarioViewModel: UsuarioViewModel,
     onEspacioSeleccionado: () -> Unit
 ) {
     val context = LocalContext.current
@@ -46,6 +58,7 @@ fun DashboardScreen(
     val parkingUiState by parkingViewModel.uiState.collectAsState()
     val usuarioUiState by usuarioViewModel.uiState.collectAsState()
 
+    // Obtiene la última ubicación conocida del usuario.
     LaunchedEffect(Unit) {
         if (ActivityCompat.checkSelfPermission(
                 context,
@@ -64,10 +77,12 @@ fun DashboardScreen(
         }
     }
 
+    // Configuración y estado del mapa.
     val cameraPositionState = rememberCameraPositionState {
         position = CameraPosition.fromLatLngZoom(parkingUiState.ubicacionActual, 15f)
     }
 
+    // Anima la cámara a la ubicación actual del usuario.
     LaunchedEffect(parkingUiState.ubicacionActual) {
         cameraPositionState.animate(
             CameraUpdateFactory.newLatLngZoom(parkingUiState.ubicacionActual, 15f)
@@ -75,7 +90,8 @@ fun DashboardScreen(
     }
 
     val markerState = rememberMarkerState(position = parkingUiState.ubicacionActual)
-    
+
+    // Actualiza la posición del marcador cuando cambia la ubicación.
     LaunchedEffect(parkingUiState.ubicacionActual) {
         markerState.position = parkingUiState.ubicacionActual
     }
@@ -91,6 +107,7 @@ fun DashboardScreen(
         ) {
             Text("Tu ubicación actual", style = MaterialTheme.typography.headlineMedium)
 
+            // Muestra el mapa de Google.
             Box(modifier = Modifier.fillMaxWidth().height(240.dp).padding(horizontal = 30.dp)
             ) {
                 GoogleMap(
@@ -119,6 +136,7 @@ fun DashboardScreen(
                 modifier = Modifier.padding(bottom = 20.dp)
             )
 
+            // Muestra la cuadrícula de espacios de estacionamiento.
             val estacionamientos = (1..20).toList()
             val columnas = 5
             val chunkedEstacionamientos = estacionamientos.chunked(columnas)
@@ -155,6 +173,7 @@ fun DashboardScreen(
                 }
             }
 
+            // Muestra la leyenda de colores de los espacios.
             Row(
                 modifier = Modifier.fillMaxWidth().padding(all = 10.dp),
                 horizontalArrangement = Arrangement.Center
@@ -165,6 +184,7 @@ fun DashboardScreen(
             }
         }
 
+        // Botón para cerrar sesión.
         Button(
             modifier = Modifier
                 .align(Alignment.TopEnd)
@@ -186,6 +206,12 @@ fun DashboardScreen(
     }
 }
 
+/**
+ * Composable que muestra un elemento de la leyenda.
+ *
+ * @param color El color que representa el estado.
+ * @param texto La descripción del estado.
+ */
 @Composable
 fun LeyendaItem(color: Color, texto: String) {
     Row(verticalAlignment = Alignment.CenterVertically) {

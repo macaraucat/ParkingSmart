@@ -13,6 +13,17 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
+/**
+ * Composable que muestra la pantalla de confirmación y resumen del pago.
+ *
+ * Esta pantalla presenta un resumen del tiempo total y el monto a pagar.
+ * Un botón permite al usuario confirmar el pago y salir de la aplicación.
+ *
+ * @param montoRecibido El monto total del pago a mostrar.
+ * @param tiempoRecibido El tiempo total de estacionamiento a mostrar.
+ * @param onPagoFinalizado Una función de devolución de llamada que se invoca cuando el usuario
+ * presiona el botón para finalizar el pago y salir.
+ */
 @Composable
 fun PagoScreen(
     montoRecibido: Double,
@@ -27,7 +38,7 @@ fun PagoScreen(
         Icon(
             imageVector = Icons.Default.CheckCircle,
             contentDescription = null,
-            tint = Color(0xFF4CAF50),
+            tint = Color(0xFF4CAF50), // Un color verde para indicar éxito.
             modifier = Modifier.size(80.dp)
         )
 
@@ -37,6 +48,7 @@ fun PagoScreen(
             modifier = Modifier.padding(bottom = 20.dp)
         )
 
+        // Tarjeta que contiene los detalles del pago.
         Card(
             modifier = Modifier.fillMaxWidth(),
             elevation = CardDefaults.cardElevation(4.dp),
@@ -44,11 +56,12 @@ fun PagoScreen(
         ) {
             Column(modifier = Modifier.padding(30.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
                 DetalleFila("Tiempo Total", tiempoRecibido)
-                HorizontalDivider()
+                HorizontalDivider() // Separador visual.
                 DetalleFila("Total a Pagar", "$${montoRecibido.toInt()}", true)
             }
         }
 
+        // Botón para confirmar el pago y finalizar el proceso.
         Button(
             onClick = onPagoFinalizado,
             modifier = Modifier.padding(top = 30.dp).fillMaxWidth().height(56.dp),
@@ -63,6 +76,16 @@ fun PagoScreen(
     }
 }
 
+/**
+ * Composable para mostrar una fila de detalle con un título y un valor.
+ *
+ * Se utiliza para construir el resumen del pago, mostrando una etiqueta y su valor correspondiente.
+ * Permite un estilo destacado para la información importante.
+ *
+ * @param titulo El texto que se mostrará como etiqueta o título de la fila.
+ * @param valor El texto que se mostrará como el valor asociado al título.
+ * @param esDestacado Un booleano que indica si la fila debe tener un estilo visual destacado (texto más grande y color diferente).
+ */
 @Composable
 fun DetalleFila(titulo: String, valor: String, esDestacado: Boolean = false) {
     Row(Modifier.fillMaxWidth(), Arrangement.SpaceBetween, Alignment.CenterVertically) {
