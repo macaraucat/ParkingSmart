@@ -20,7 +20,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.core.app.ActivityCompat
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.parkingsmart.viewmodel.ParkingViewModel
 import com.example.parkingsmart.viewmodel.UsuarioViewModel
@@ -38,8 +37,8 @@ import com.google.maps.android.compose.rememberCameraPositionState
 @Composable
 fun DashboardScreen(
     navController: NavHostController,
-    parkingViewModel: ParkingViewModel = viewModel(),
-    usuarioViewModel: UsuarioViewModel = viewModel(),
+    parkingViewModel: ParkingViewModel, // Quitamos el = viewModel()
+    usuarioViewModel: UsuarioViewModel, // Quitamos el = viewModel()
     onEspacioSeleccionado: () -> Unit
 ) {
     val context = LocalContext.current
@@ -161,7 +160,7 @@ fun DashboardScreen(
                 horizontalArrangement = Arrangement.Center
             ) {
                 LeyendaItem(Color(0xFF00B607), "Disponible")
-                LeyendaItem(Color(0xFFE0E0E0), "Procesando")
+                LeyendaItem(Color(0xFFE3E3E3), "Procesando")
                 LeyendaItem(Color(0xFFF00000), "Ocupado")
             }
         }
@@ -182,7 +181,7 @@ fun DashboardScreen(
                 containerColor = Color.Transparent
             ),
         ) {
-            Text("CERRAR SESIÓN", style = MaterialTheme.typography.labelMedium)
+            Text("CERRAR SESIÓN", style = MaterialTheme.typography.labelMedium, color = Color.Black)
         }
     }
 }

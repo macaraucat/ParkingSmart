@@ -81,16 +81,9 @@ class MainActivity : ComponentActivity() {
                     }
 
                     composable("parking_camera") {
-                        ParkingMainScreen(navController = navController)
-                    }
-
-                    composable("parking_screen") {
-                        ParkingScreen(
-                            parkingViewModel = parkingViewModel,
-                            usuarioViewModel = usuarioViewModel,
-                            onNavegarAlPago = { monto, tiempo, correo ->
-                                navController.navigate("metodopago/$monto/$tiempo/$correo")
-                            }
+                        ParkingMainScreen(
+                            navController = navController,
+                            viewModel = parkingViewModel
                         )
                     }
 
@@ -105,12 +98,11 @@ class MainActivity : ComponentActivity() {
                     }
 
                     composable(
-                        // Agregamos {correo} a la ruta
                         route = "metodopago/{monto}/{tiempo}/{correo}",
                         arguments = listOf(
                             navArgument("monto") { type = NavType.FloatType },
                             navArgument("tiempo") { type = NavType.StringType },
-                            navArgument("correo") { type = NavType.StringType } // Nuevo argumento
+                            navArgument("correo") { type = NavType.StringType }
                         )
                     ) { backStackEntry ->
                         val monto = backStackEntry.arguments?.getFloat("monto")?.toDouble() ?: 0.0
@@ -118,10 +110,10 @@ class MainActivity : ComponentActivity() {
                         val correo = backStackEntry.arguments?.getString("correo") ?: ""
 
                         MetodoPagoScreen(
-                            viewModel = pagoViewModel, // Recuerda crear este VM con la Factory también
+                            viewModel = pagoViewModel,
                             monto = monto,
                             tiempo = tiempo,
-                            correoUsuario = correo, // Pasamos el correo aquí
+                            correoUsuario = correo,
                             onPagoExitoso = {
                                 navController.navigate("pago/$monto/$tiempo")
                             }
@@ -158,12 +150,9 @@ class MainActivity : ComponentActivity() {
     @Composable
     fun AppNavigationPreview() {
         val navController = rememberNavController()
-        val usuarioViewModel: UsuarioViewModel = viewModel()
 
         ParkingSmartTheme {
-            NavHost(navController = navController, startDestination = "login") {
-                composable("login") { LoginScreen(navController, usuarioViewModel) }
-            }
+            // Simplified for preview if needed, or better, don't use it if it depends on complex factory
         }
     }
 }

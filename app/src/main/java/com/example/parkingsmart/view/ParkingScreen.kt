@@ -23,7 +23,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.parkingsmart.ui.theme.Blue
 import com.example.parkingsmart.ui.theme.Gray
 import com.example.parkingsmart.ui.theme.White
@@ -32,9 +31,9 @@ import com.example.parkingsmart.viewmodel.UsuarioViewModel
 
 @Composable
 fun ParkingScreen(
-    parkingViewModel: ParkingViewModel = viewModel(),
-    usuarioViewModel: UsuarioViewModel = viewModel(), // Agregado
-    onNavegarAlPago: (Double, String, String) -> Unit // Modificado
+    parkingViewModel: ParkingViewModel, // Quitamos el = viewModel()
+    usuarioViewModel: UsuarioViewModel, // Quitamos el = viewModel()
+    onNavegarAlPago: (Double, String, String) -> Unit
 ) {
     val parkingUiState by parkingViewModel.uiState.collectAsState()
     val usuarioUiState by usuarioViewModel.uiState.collectAsState()
@@ -89,7 +88,6 @@ fun ParkingScreen(
 
         Button(
             onClick = {
-                // Pasamos el correo del usuarioViewModel
                 onNavegarAlPago(parkingUiState.costoActual, parkingUiState.tiempoFormateado, usuarioUiState.correo)
             },
             modifier = Modifier.fillMaxWidth().height(56.dp),

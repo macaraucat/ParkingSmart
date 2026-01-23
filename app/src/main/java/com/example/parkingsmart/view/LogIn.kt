@@ -71,23 +71,31 @@ fun LoginScreen(
                 value = uiState.correo,
                 modifier = Modifier.fillMaxWidth(),
                 onValueChange = viewModel::onCorreoChange,
-                label = { Text("Correo Electrónico") },
+                label = { Text("Correo Electrónico", color = Color.Black) },
                 isError = uiState.errores.correo != null,
                 supportingText = {
                     uiState.errores.correo?.let { Text(it, color = MaterialTheme.colorScheme.error) }
-                }
+                },
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedTextColor = Color.Black,
+                    unfocusedTextColor = Color.Black
+                )
             )
 
             OutlinedTextField(
                 value = uiState.clave,
                 modifier = Modifier.fillMaxWidth(),
                 onValueChange = viewModel::onClaveChange,
-                label = { Text("Clave") },
+                label = { Text("Clave", color = Color.Black) },
                 visualTransformation = PasswordVisualTransformation(),
                 isError = uiState.errores.clave != null,
                 supportingText = {
                     uiState.errores.clave?.let { Text(it, color = MaterialTheme.colorScheme.error) }
-                }
+                },
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedTextColor = Color.Black,
+                    unfocusedTextColor = Color.Black
+                )
             )
 
             Button(
@@ -107,7 +115,7 @@ fun LoginScreen(
                     .fillMaxWidth()
                     .height(68.dp)
                     .padding(top = 14.dp, bottom = 10.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Blue), // Asegúrate de tener definido 'Blue' o usa Color.Blue
+                colors = ButtonDefaults.buttonColors(containerColor = Color.Blue),
                 shape = RoundedCornerShape(12.dp)
             ) {
                 Text("Iniciar Sesión", style = MaterialTheme.typography.labelLarge)

@@ -20,6 +20,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -84,38 +85,54 @@ fun RegistroScreen(
             OutlinedTextField(
                 value = estado.nombre,
                 onValueChange = viewModel::onNombreChange,
-                label = { Text("Nombre") },
+                label = { Text("Nombre", color = Color.Black) },
                 isError = estado.errores.nombre != null,
                 modifier = Modifier.fillMaxWidth(),
-                supportingText = { estado.errores.nombre?.let { Text(it, color = MaterialTheme.colorScheme.error) } }
+                supportingText = { estado.errores.nombre?.let { Text(it, color = MaterialTheme.colorScheme.error) } },
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedTextColor = Color.Black,
+                    unfocusedTextColor = Color.Black
+                )
             )
 
             OutlinedTextField(
                 value = estado.patente,
                 onValueChange = viewModel::onPatenteChange,
-                label = { Text("Patente") },
+                label = { Text("Patente", color = Color.Black) },
                 isError = estado.errores.patente != null,
                 modifier = Modifier.fillMaxWidth(),
-                supportingText = { estado.errores.patente?.let { Text(it, color = MaterialTheme.colorScheme.error) } }
+                supportingText = { estado.errores.patente?.let { Text(it, color = MaterialTheme.colorScheme.error) } },
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedTextColor = Color.Black,
+                    unfocusedTextColor = Color.Black
+                )
             )
 
             OutlinedTextField(
                 value = estado.correo,
                 onValueChange = viewModel::onCorreoChange,
-                label = { Text("Correo") },
+                label = { Text("Correo", color = Color.Black) },
                 isError = estado.errores.correo != null,
                 modifier = Modifier.fillMaxWidth(),
-                supportingText = { estado.errores.correo?.let { Text(it, color = MaterialTheme.colorScheme.error) } }
+                supportingText = { estado.errores.correo?.let { Text(it, color = MaterialTheme.colorScheme.error) } },
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedTextColor = Color.Black,
+                    unfocusedTextColor = Color.Black
+                )
             )
 
             OutlinedTextField(
                 value = estado.clave,
                 onValueChange = viewModel::onClaveChange,
-                label = { Text("Clave") },
+                label = { Text("Clave", color = Color.Black) },
                 isError = estado.errores.clave != null,
                 modifier = Modifier.fillMaxWidth(),
                 visualTransformation = PasswordVisualTransformation(),
-                supportingText = { estado.errores.clave?.let { Text(it, color = MaterialTheme.colorScheme.error) } }
+                supportingText = { estado.errores.clave?.let { Text(it, color = MaterialTheme.colorScheme.error) } },
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedTextColor = Color.Black,
+                    unfocusedTextColor = Color.Black
+                )
             )
 
             Row(verticalAlignment = Alignment.CenterVertically) {

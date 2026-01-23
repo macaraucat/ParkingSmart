@@ -43,7 +43,7 @@ class UsuarioViewModel(private val dao: ParkingDao) : ViewModel() {
 
                 val usuarioExistente = dao.obtenerUsuarioPorCorreo(estadoActual.correo)
                 if (usuarioExistente != null) {
-                    _uiState.update { it.copy(errores = it.errores.copy(correo = "El correo ya está registrado")) }
+                    _uiState.update { it.copy(errores = it.errores.copy(correo = "CORREO YA SE ENCUENTRA REGISTRADO")) }
                     return@launch
                 }
 
@@ -78,7 +78,7 @@ class UsuarioViewModel(private val dao: ParkingDao) : ViewModel() {
                 onSuccess()
             } else {
                 _uiState.update {
-                    it.copy(errores = it.errores.copy(clave = "Correo o clave incorrectos"))
+                    it.copy(errores = it.errores.copy(clave = "CLAVE O CORREO ELECTRÓNICO INCORRECTOS"))
                 }
             }
         }

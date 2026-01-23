@@ -1,5 +1,6 @@
 package com.example.parkingsmart.view
 
+import CameraScreen
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -63,7 +64,7 @@ fun ParkingMainScreen(
             Button(
                 onClick = { 
                     viewModel.iniciarCronometro()
-                    navController.navigate("parking_screen")
+                    navController.navigate("parking")
                 },
                 modifier = Modifier.fillMaxWidth().height(56.dp),
                 shape = RoundedCornerShape(12.dp),
