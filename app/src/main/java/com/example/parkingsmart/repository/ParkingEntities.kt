@@ -1,4 +1,4 @@
-package com.example.parkingsmart.model.db
+package com.example.parkingsmart.repository
 
 
 import androidx.room.Entity

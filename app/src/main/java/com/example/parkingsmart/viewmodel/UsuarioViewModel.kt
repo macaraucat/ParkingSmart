@@ -6,8 +6,8 @@ import com.example.parkingsmart.model.UsuarioUIState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
-import com.example.parkingsmart.model.db.ParkingDao
-import com.example.parkingsmart.model.db.UsuarioEntity
+import com.example.parkingsmart.repository.ParkingDao
+import com.example.parkingsmart.repository.UsuarioEntity
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch

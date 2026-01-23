@@ -3,8 +3,8 @@ package com.example.parkingsmart.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.parkingsmart.model.ParkingUIState
-import com.example.parkingsmart.model.db.ParkingDao
-import com.example.parkingsmart.model.db.TicketEntity
+import com.example.parkingsmart.repository.ParkingDao
+import com.example.parkingsmart.repository.TicketEntity
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay

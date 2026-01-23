@@ -25,7 +25,7 @@ import com.example.parkingsmart.viewmodel.ParkingViewModel
 import com.example.parkingsmart.viewmodel.PagoViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.parkingsmart.model.db.ParkingDatabase
+import com.example.parkingsmart.repository.ParkingDatabase
 
 class MainActivity : ComponentActivity() {
 

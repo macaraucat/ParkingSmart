@@ -3,8 +3,7 @@ package com.example.parkingsmart.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.parkingsmart.model.PagoUIState
-import com.example.parkingsmart.model.db.ParkingDao
-import com.example.parkingsmart.model.db.TicketEntity
+import com.example.parkingsmart.repository.ParkingDao
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
