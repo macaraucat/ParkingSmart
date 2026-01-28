@@ -16,7 +16,7 @@
         android:theme="@style/Theme.ParkingSmart">
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyCt6AIRXr5OGvn4EcdFtt83kSEithPgX6Q" />
+            android:value="xxxxx" />
         <activity
             android:name=".MainActivity"
             android:exported="true"
